@@ -1,35 +1,38 @@
-#ifndef D_LINKED_LIST_H
-#define D_LINKED_LIST_H
+#ifndef DOUBLY_LINKED_LIST
+#define DOUBLY_LINKED_LIST
 
-#define TRUE 1
-#define FALSE 0
+typedef int Val;
 
-typedef int LData;
-
-typedef struct _node {
-  LData data;
-  struct _node *next;
+typedef struct _Node {
+  Val val;
+  struct _Node *next;
+  struct _Node *prev;
 } Node;
 
 typedef struct {
+  int size;
   Node *head;
-  Node *before;
-  Node *cur;
-  int numOfData;
-  int (*comp)(LData d1, LData d2);
-} LinkedList;
+  Node *tail;
+} DoublyLinkedList;
 
-typedef LinkedList List;
+typedef DoublyLinkedList List;
 
-void ListInit(List *plist);
-void LInsert(List *plist, LData data);
+Node *NodeInit(Val val);
+void ListInit(List *list);
 
-int LFirst(List *plist, LData *pdata);
-int LNext(List *plist, LData *pdata);
+int LEmpty(List *list);
+int LSize(List *list);
 
-LData LRemove(List *plist);
-int LCount(List *plist);
+Val LFront(List *list);
+Val LRear(List *list);
 
-void SetSortRule(List *plist, int (*comp)(LData d1, LData d2));
+void LInsertFront(List *list, Val val);
+void LInsertRear(List *list, Val val);
+
+Val LPopFront(List *list);
+Val LPopRear(List *list);
+
+void LTraverse(List *list);
+void LTraverseReverse(List *list);
 
 #endif

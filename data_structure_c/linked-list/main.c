@@ -1,56 +1,29 @@
 #include "DLinkedList.h"
 #include <stdio.h>
 
-int ascending(LData d1, LData d2) {
-  return d1 > d2;
-}
-
 int main(void) {
   List list;
-  int data;
 
   ListInit(&list);
+  printf("Empty: %d\n", LEmpty(&list));
+  printf("Size: %d\n", LSize(&list));
 
-  SetSortRule(&list, ascending);
+  LInsertFront(&list, 6);
+  LInsertFront(&list, 5);
+  LInsertFront(&list, 4);
+  LInsertFront(&list, 3);
+  LInsertFront(&list, 2);
+  LInsertFront(&list, 1);
 
-  LInsert(&list, 30);
-  LInsert(&list, 20);
-  LInsert(&list, 10);
-  LInsert(&list, 20);
-  LInsert(&list, 30);
+  printf("Front: %d\n", LFront(&list));
+  printf("Rear: %d\n", LRear(&list));
+  printf("Traverse:\n");
+  LTraverse(&list);
+  printf("Traverse Reverse:\n");
+  LTraverseReverse(&list);
 
-  // 순회
-  printf("현재 데이터 수: %d\n", LCount(&list));
-  if (LFirst(&list, &data)) {
-    printf("데이터: %d\n", data);
-
-    while (LNext(&list, &data)) {
-      printf("데이터: %d\n", data);
-    }
-  }
-
-  // 제거
-  if (LFirst(&list, &data)) {
-    if (data == 20) {
-      LRemove(&list);
-    }
-
-    while (LNext(&list, &data)) {
-      if (data == 20) {
-        LRemove(&list);
-      }
-    }
-  }
-
-  LInsert(&list, 15);
-
-  // 순회
-  printf("현재 데이터 수: %d\n", LCount(&list));
-  if (LFirst(&list, &data)) {
-    printf("데이터: %d\n", data);
-
-    while (LNext(&list, &data)) {
-      printf("데이터: %d\n", data);
-    }
-  }
+  printf("Pop Front: %d\n", LPopFront(&list));
+  printf("Pop Rear: %d\n", LPopRear(&list));
+  printf("Traverse:\n");
+  LTraverse(&list);
 }

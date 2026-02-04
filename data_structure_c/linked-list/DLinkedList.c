@@ -2,85 +2,127 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void ListInit(List *plist) {
-  plist->head = (Node *)malloc(sizeof(Node));
-  plist->before = NULL;
-  plist->cur = NULL;
-  plist->numOfData = 0;
-  plist->comp = NULL;
+Node *NodeInit(Val val) {
+  Node *node = (Node *)malloc(sizeof(Node));
+  node->val = val;
+  node->prev = NULL;
+  node->next = NULL;
+  return node;
 }
 
-void FInsert(List *plist, LData data) {
-  Node *node = (Node *)malloc(sizeof(Node));
-  node->data = data;
-  node->next = plist->head->next;
-
-  plist->head->next = node;
-  plist->numOfData++;
+void ListInit(List *list) {
+  list->size = 0;
+  list->head = NULL;
+  list->tail = NULL;
 }
 
-void SInsert(List *plist, LData data) {
-  Node *node = (Node *)malloc(sizeof(Node));
-  Node *pred = plist->head;
-  node->data = data;
+int LEmpty(List *list) {
+  return list->size == 0;
+}
 
-  while (pred->next != NULL && plist->comp(data, pred->next->data) != 0) {
-    pred = pred->next;
+int LSize(List *list) {
+  return list->size;
+}
+
+Val LFront(List *list) {
+  if (LEmpty(list)) {
+    exit(-1);
   }
-
-  node->next = pred->next;
-  pred->next = node;
-  plist->numOfData++;
+  return list->head->val;
 }
 
-void LInsert(List *plist, LData data) {
-  if (plist->comp != NULL) {
-    SInsert(plist, data);
+Val LRear(List *list) {
+  if (LEmpty(list)) {
+    exit(-1);
+  }
+  return list->tail->val;
+}
+
+void LInsertFront(List *list, Val val) {
+  Node *node = NodeInit(val);
+
+  if (LEmpty(list)) {
+    list->head = node;
+    list->tail = node;
   } else {
-    FInsert(plist, data);
+    node->next = list->head;
+    list->head->prev = node;
+    list->head = node;
   }
+  list->size += 1;
 }
 
-int LFirst(List *plist, LData *pdata) {
-  if (plist->head->next == NULL) {
-    return FALSE;
+void LInsertRear(List *list, Val val) {
+  Node *node = NodeInit(val);
+
+  if (LEmpty(list)) {
+    list->head = node;
+    list->tail = node;
+  } else {
+    node->prev = list->tail;
+    list->tail->next = node;
+    list->tail = node;
+  }
+  list->size += 1;
+}
+
+Val LPopFront(List *list) {
+  if (LEmpty(list)) {
+    exit(-1);
   }
 
-  plist->before = plist->head;
-  plist->cur = plist->head->next;
-  *pdata = plist->cur->data;
-
-  return TRUE;
+  list->size -= 1;
+  Node *head = list->head;
+  Val val = head->val;
+  list->head = head->next;
+  if (list->head == NULL) {
+    list->tail = NULL;
+  } else {
+    list->head->prev = NULL;
+  }
+  free(head);
+  return val;
 }
 
-int LNext(List *plist, LData *pdata) {
-  if (plist->cur->next == NULL) {
-    return FALSE;
+Val LPopRear(List *list) {
+  if (LEmpty(list)) {
+    exit(-1);
   }
 
-  plist->before = plist->cur;
-  plist->cur = plist->cur->next;
-  *pdata = plist->cur->data;
-  return TRUE;
+  list->size -= 1;
+  Node *tail = list->tail;
+  Val val = tail->val;
+  list->tail = tail->prev;
+  if (list->tail == NULL) {
+    list->head = NULL;
+  } else {
+    list->tail->next = NULL;
+  }
+  return val;
 }
 
-LData LRemove(List *plist) {
-  Node *rpos = plist->cur;
-  LData rdata = rpos->data;
+void LTraverse(List *list) {
+  if (LEmpty(list)) {
+    return;
+  }
 
-  plist->before->next = rpos->next;
-  plist->cur = plist->before;
-  plist->numOfData--;
-
-  free(rpos);
-
-  return rdata;
+  Node *current = list->head;
+  while (current != NULL) {
+    printf("%d -> ", current->val);
+    current = current->next;
+  }
+  printf("\n");
 }
 
-int LCount(List *plist) {
-  return plist->numOfData;
-}
+void LTraverseReverse(List *list) {
+  if (LEmpty(list)) {
+    return;
+  }
 
-void SetSortRule(List *plist, int (*comp)(LData, LData)) {
-  plist->comp = comp;
+  Node *current = list->tail;
+  while (current != NULL) {
+    printf("%d -> ", current->val);
+    current = current->prev;
+  }
+  printf("\n");
 }
