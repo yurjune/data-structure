@@ -1,41 +1,41 @@
 #include <iostream>
+#include <utility>
 #include <vector>
 
 using namespace std;
 
-int median(vector<int> &data, int left, int right) {
-  int mid = left + (right - left) / 2;
-  int x = data[left];
-  int y = data[mid];
-  int z = data[right];
-  if ((y <= x && x <= z) || (z <= x && x <= y)) return left;
-  if ((z <= y && y <= x) || (x <= y && y <= z)) return mid;
-  return right;
+int median_of_three(vector<int> &v, int l, int r) {
+  int m = l + (r - l) / 2;
+  int x = v[l];
+  int y = v[m];
+  int z = v[r];
+
+  if ((y <= x && x <= z) || (z <= x && x <= y)) return l;
+  if ((z <= y && y <= x) || (x <= y && y <= z)) return m;
+  return r;
 }
 
-int partition(vector<int> &data, int left, int right) {
-  int m = median(data, left, right);
-  swap(data[left], data[m]); // fix pivot to first index
+int partition_lomuto(vector<int> &data, int left, int right) {
+  int m = median_of_three(data, left, right);
+  swap(data[m], data[right]); // place pivot to right
 
-  int pivot = data[left];
-  int i = left + 1;
-  int j = right;
+  int pivot = data[right];
+  int i = left - 1;
 
-  while (true) {
-    while (i <= right && data[i] <= pivot) i++;
-    while (j >= left + 1 && data[j] > pivot) j--;
-    if (i > j) break;
-    swap(data[i], data[j]);
+  for (int j = left; j < right; j++) {
+    if (data[j] <= pivot) {
+      i++;
+      swap(data[i], data[j]);
+    }
   }
-
-  swap(data[left], data[j]);
-  return j;
+  swap(data[i + 1], data[right]);
+  return i + 1; // pivot position
 }
 
 void quick_sort(vector<int> &data, int left, int right) {
   if (left >= right) return;
 
-  int p = partition(data, left, right);
+  int p = partition_lomuto(data, left, right);
   quick_sort(data, left, p - 1);
   quick_sort(data, p + 1, right);
 }
